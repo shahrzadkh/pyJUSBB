@@ -26,7 +26,6 @@ joblib==0.11
 # How to run: 
 in the environment with the above-mentioned requirements, run the following: 
 python Functional_profiling_class_wise_GUI.py
-
-This will open the folllwoing window:
+ For more information refer to the wiki().
 
 
