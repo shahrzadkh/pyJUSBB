@@ -22,3 +22,11 @@ joblib==0.11
 
 * In addition, the program is using fsl and AFNI to create merged 4D images and resample the regions_of_interests. So, it is required to have these neuroimaging packages also in the path. 
 
+
+# How to run: 
+in the environment with the above-mentioned requirements, run the following: 
+python Functional_profiling_class_wise_GUI.py
+
+This will open the folllwoing window:
+
+
