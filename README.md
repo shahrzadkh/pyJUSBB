@@ -29,3 +29,5 @@ python Functional_profiling_class_wise_GUI.py
  For more information refer to the wiki(https://github.com/shahrzadkh/pyJUSBB/wiki).
 
 
+# Contact:
+shahrzadkhm@gmail.com
