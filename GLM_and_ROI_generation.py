@@ -474,13 +474,17 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
         Subjects = Sample_Table['subject_folder'].tolist()
     elif Sample_name == 'ADNI_new':
         Subjects = Sample_Table['SubjectID'].tolist()
+    elif Sample_name=='':
+        
+        Subjects = Sample_Table['Subject'].tolist()    
+
         
         
         
     if modulation_method == 'non_linearOnly':
        smoothed_preprocessed_prefix =  'sm0wp1'
        
-    elif modulation_method == 'modulated':
+    elif modulation_method == 'fully_modulated':
        smoothed_preprocessed_prefix =  'smwp1'
    
     #i=0
@@ -494,7 +498,7 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
             ##This is because VBM8 apparently had an extra -r in the naming
 #            if modulation_method == 'non_linearOnly':
 #                smoothed_preprocessed_prefix =  'sm0wrp1'
-#            elif modulation_method == 'modulated':
+#            elif modulation_method == 'fully_modulated':
 #                smoothed_preprocessed_prefix =  'smwrp1'       
 #           
 #            files_list.append(os.path.join(Image_top_DIR,Sample_Table['ID'][Subj], '3D/'+smoothed_preprocessed_prefix+ Sample_Table['ID'][Subj]+ '.nii'))
@@ -505,13 +509,38 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
                     smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'m0wp1'
                 else: 
                     smoothed_preprocessed_prefix =  'm0wp1'
-            elif modulation_method == 'modulated':
+            elif modulation_method == 'fully_modulated':
                 if Smoothing_kernel_FWHM >0:
                     smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'mwp1'
                 else:
                     smoothed_preprocessed_prefix = 'mwp1'
             
             files_list.append(os.path.join(Image_top_DIR,str(Sample_Table['Subject'][Subj]),'mri',smoothed_preprocessed_prefix+ str(Sample_Table['Subject'][Subj]) + '.nii'))
+
+        elif Sample_name =='':
+            ##This is because VBM8 apparently had an extra -r in the naming
+#            if modulation_method == 'non_linearOnly':
+#                smoothed_preprocessed_prefix =  'sm0wrp1'
+#            elif modulation_method == 'fully_modulated':
+#                smoothed_preprocessed_prefix =  'smwrp1'       
+#           
+#            files_list.append(os.path.join(Image_top_DIR,Sample_Table['ID'][Subj], '3D/'+smoothed_preprocessed_prefix+ Sample_Table['ID'][Subj]+ '.nii'))
+#            #/data/Heisenberg_HDD/MultiState/DATA/HCP/100610/3D/sm0wrp1100610.nii 
+                        ##This is felix's new naming
+            if modulation_method == 'non_linearOnly':
+                if Smoothing_kernel_FWHM >0:
+                    smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'m0wp1'
+                else: 
+                    smoothed_preprocessed_prefix =  'm0wp1'
+            elif modulation_method == 'fully_modulated':
+                if Smoothing_kernel_FWHM >0:
+                    smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'mwp1'
+                else:
+                    smoothed_preprocessed_prefix = 'mwp1'
+            
+            files_list.append(os.path.join(Image_top_DIR,str(Sample_Table['Subject'][Subj]),'mri',smoothed_preprocessed_prefix+ str(Sample_Table['Subject'][Subj]) + '.nii'))
+
+
             
         elif 'SPM12_HCP' in Sample_name:
             files_list.append(os.path.join(Image_top_DIR,Sample_Table['ID'][Subj], 'CAT/mri/'+smoothed_preprocessed_prefix+ Sample_Table['ID'][Subj]+ '.nii'))
@@ -523,7 +552,7 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
             ##This is felix's new naming
             if modulation_method == 'non_linearOnly':
                 smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'m0wp1'
-            elif modulation_method == 'modulated':
+            elif modulation_method == 'fully_modulated':
                 smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'mwp1'
             files_list.append(os.path.join(Image_top_DIR,Sample_Table.SubjectID[Subj],Sample_Table.SessionID[Subj],\
                                            'mri', smoothed_preprocessed_prefix+ Sample_Table.SubjectID[Subj]+'_'+Sample_Table.SessionID[Subj]+'.nii'))
@@ -594,6 +623,10 @@ def create_merged_thickness_FROM_TABLE(Subjects_DIR, Sample_Table, merge_save_di
         Subjects = Sample_Table['subject_folder'].tolist()
     elif Sample_name == 'ADNI_new':
         Subjects = Sample_Table['SubjectID'].tolist()
+    elif Sample_name=='':
+        
+        Subjects = Sample_Table['Subject'].tolist()    
+
         
    
     #i=0
@@ -2087,8 +2120,14 @@ def Functional_correlations(ROI_vol, Cognitive_test_score, Confounders_val = [],
         res_cog = []
         lm = linear_model.LinearRegression(fit_intercept = True, copy_X = True, n_jobs = 2)
         res_cog = OLS_residuals(Confounders_val,Cognitive_test_score, lm)
+#        if correlation_method == 'sPartial':
+#            P_value  = stats.spearmanr(res_roi, res_cog)[1]
+#            functional_corr_of_ROI = stats.spearmanr(res_roi, res_cog)[0]
+#
+#        else:
         functional_corr_of_ROI = stats.pearsonr(res_roi, res_cog)[0]
         P_value  = stats.pearsonr(res_roi, res_cog)[1]
+
            
     return P_value, [functional_corr_of_ROI]  # This is a dataframe with rows as Cognitive tetsts and columns as ROIs
 
