@@ -42,151 +42,182 @@ def parse_args():
         with open(args_file) as data_file:
             stored_args = json.load(data_file)
     parser = GooeyParser(description='This version is tested for eNKI data & may work for multi-site data as well')
-    parser.add_argument('base_analysis_directory',
-                        action='store',
-                        default=stored_args.get('base_analysis_directory'),
-                        widget='DirChooser',
-                        help="Where to save the results")
     
-    parser.add_argument('analysis_directory_name',
-                        action='store',
-                        default=stored_args.get('analysis_directory_name'),
-                        help="analysis_directory_name")
+    requirered_args=parser.add_argument_group('Required arguments')
+    requirered_args.add_argument('--base_analysis_directory',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('base_analysis_directory'),
+                                 widget='DirChooser',
+                                 help="Where to save the results")
+    
+    requirered_args.add_argument('--analysis_directory_name',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('analysis_directory_name'),
+                                 help="analysis_directory_name")
     
     
-    parser.add_argument('Main_Sample_info_table_CSV_full_path',
-                        action='store',
-                        default=stored_args.get('Main_Sample_info_table_CSV_full_path'),
-                        widget='FileChooser',
-                        help='Main_Sample_info_table_CSV_full_path')
+    requirered_args.add_argument('--Main_Sample_info_table_CSV_full_path',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('Main_Sample_info_table_CSV_full_path'),
+                                 widget='FileChooser',
+                                 help='Main_Sample_info_table_CSV_full_path')
     
     
     parser.add_argument('--Other_important_variable',
+                        required=False,
                         action='store',
                         default=stored_args.get('Other_important_variable'),
                         help="Other_important_variable")
     
-    parser.add_argument('Confounders_txt_file',
-                        action='store',
-                        default=stored_args.get('Confounders_txt_file'),
-                        widget='FileChooser',
-                        help='Confounders_txt_file')
+    requirered_args.add_argument('--Confounders_txt_file',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('Confounders_txt_file'),
+                                 widget='FileChooser',
+                                 help='Confounders_txt_file')
     
 #    parser.add_argument('Diagnosis Criteria',
 #                        action='store',
 #                        default=stored_args.get('Diagnosis_exclusion_criteria'),
 #                        help="Diagnosis_exclusion_criteria is a \ncolumn of 1 and missing, with a name: \nloos Or strict Or empty")
 
-    parser.add_argument('Diagnosis_exclusion_criteria', 
+    parser.add_argument('--Diagnosis_exclusion_criteria', 
+                        required=False,
                         metavar='Diagnosis_exclusion_criteria', help="Name of a column if it exists Otherwise choose 'None' \nChoose one option ",
-                        widget="Listbox", nargs='+', choices=['loose', 'strict', 'None'],
+                        widget="Listbox", nargs='+', choices=['loose', 'strict'],
                         default=stored_args.get('Diagnosis_exclusion_criteria'))
 
 
 
-    parser.add_argument('subsampling_scripts_base_dir',
-                        action='store',
-                        widget='DirChooser',
-                        default=stored_args.get('subsampling_scripts_base_dir'),
-                        help="Directory, where 'Mod_01_binning_shahrzad.py' exists")
+    requirered_args.add_argument('--subsampling_scripts_base_dir',
+                                 required=True,
+                                 action='store',
+                                 widget='DirChooser',
+                                 default=stored_args.get('subsampling_scripts_base_dir'),
+                                 help="Directory, where 'Mod_01_binning_shahrzad.py' exists")
 
-    parser.add_argument('gender column name',
-                        action='store',
-                        default=stored_args.get('GENDER'),
-                        help="gender column name in your main sample table")
-    parser.add_argument('AGE column name',
-                        action='store',
-                        default=stored_args.get('AGE'),
-                        help="AGE column name in your main sample table")
-    parser.add_argument('--SITE column name',
+    requirered_args.add_argument('--gender_column_name',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('gender_column_name'),
+                                 help="gender column name in your main sample table")
+    requirered_args.add_argument('--AGE_column_name',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('AGE_column_name'),
+                                 help="AGE column name in your main sample table")
+    parser.add_argument('--SITE',
+                        required=False,
                         action='store',
                         default=stored_args.get('SITE'),
                         help="SITE column name in your main sample table,\nonly if you want site as dummy var")
    
-    parser.add_argument('ROI_full_path',
-                        action='store',
-                        default=stored_args.get('ROI_full_path'),
-                        widget='FileChooser',
-                        help='A text file with full path of ROIs')
+    requirered_args.add_argument('--ROI_full_path',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('ROI_full_path'),
+                                 widget='FileChooser',
+                                 help='A text file with full path of ROIs')
 #    parser.add_argument('what_to_extract',
-#                        action='store',
+#                        widget='dropdown',
+#                        choices=['mean', 'Median'],
 #                        default=stored_args.get('what_to_extract'),
 #                        help="what_to_extract: mean or Median")
-    parser.add_argument('what_to_extract', 
-                        metavar='what_to_extract', help="Choose one option",
-                        widget="Listbox", nargs='+', choices=['mean', 'Median'],
-                        default=stored_args.get('what_to_extract'))
+    requirered_args.add_argument('--what_to_extract', 
+                                 required=True,
+                                 metavar='what_to_extract', help="Choose one option",
+                                 widget="Listbox", nargs='+', choices=['mean', 'Median'],
+                                 default=stored_args.get('what_to_extract'))
 
-    parser.add_argument('num_parallel_jobs',
-                        action='store',
-                        default=stored_args.get('num_parallel_jobs'),
-                        help="# jobs (bootstraps/ROIs) to run in parallel")
+    requirered_args.add_argument('--num_parallel_jobs',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('num_parallel_jobs'),
+                                 help="# jobs (bootstraps/ROIs) to run in parallel")
     
 
 
     parser.add_argument('--Base_Sample_name',
+                        required=False,
                         action='store',
                         default=stored_args.get('Base_Sample_name'),
                         help="Base_Sample_name: leave empty")
 
-    parser.add_argument('Image_top_DIR',
-                        action='store',
-                        widget='DirChooser',
-                        default=stored_args.get('Image_top_DIR'),
-                        help="Location of CAT processed .nii files")
+    requirered_args.add_argument('--Image_top_DIR',
+                                 required=True,
+                                 action='store',
+                                 widget='DirChooser',
+                                 default=stored_args.get('Image_top_DIR'),
+                                 help="Location of CAT processed .nii files")
     
     
     
     
-    parser.add_argument('Smoothing_kernel_FWHM',
-                        action='store',
-                        default=stored_args.get('Smoothing_kernel_FWHM'),
-                        help="Smoothing_kernel_FWHM")
+    requirered_args.add_argument('--Smoothing_kernel_FWHM',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('Smoothing_kernel_FWHM'),
+                                 help="Smoothing_kernel_FWHM")
     
-    parser.add_argument('Modulation_Method', 
-                        metavar='Modulation_Method', help="Choose one option",
-                        widget="Listbox", nargs='+', choices=['fully_modulated', 'non_linearOnly'],
-                        default=stored_args.get('Modulation_Method'))
-    parser.add_argument('Cog_list_for_profiling',
-                        action='store',
-                        default=stored_args.get('Cog_list_for_profiling'),
-                        widget='FileChooser',
-                        help='text file with list of Cognitive  \nscores names for Profiling')
+    
+    
+    
+    requirered_args.add_argument('--Modulation_Method',
+                                 required=True,
+                                 metavar='Modulation_Method', help="Choose one option",
+                                 widget="Listbox", nargs='+', choices=['fully_modulated', 'non_linearOnly'],
+                                 default=stored_args.get('Modulation_Method'))
+    
+    
+    requirered_args.add_argument('--Cog_list_for_profiling',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('Cog_list_for_profiling'),
+                                 widget='FileChooser',
+                                 help='text file with list of Cognitive  \nscores names for Profiling')
     
     
 #    parser.add_argument('correlation_method',
 #                        action='store',
 #                        default=stored_args.get('correlation_method'),
 #                        help="correlation_method: 'pearson' \nor 'spearman' or 'sPartial' or 'linear_regression'")
-    parser.add_argument('correlation_method', 
-                        metavar='correlation_method', help="Choose one option",
-                        widget="Listbox", nargs='+', choices=['pearson', 'spearman', 'sPartial', 'linear_regression'],
-                        default=stored_args.get('correlation_method'))
+    requirered_args.add_argument('--correlation_method', 
+                                 required=True,
+                                 metavar='correlation_method', help="Choose one option",
+                                 widget="Listbox", nargs='+', choices=['pearson', 'spearman', 'sPartial', 'linear_regression'],
+                                 default=stored_args.get('correlation_method'))
 
-    parser.add_argument('alpha',
-                        action='store',
-                        default=stored_args.get('alpha'),
-                        help="alpha corersponding to : \nCI = 100*(1 -alpha*2)")
+    requirered_args.add_argument('--alpha',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('alpha'),
+                                 help="alpha corersponding to : \nCI = 100*(1 -alpha*2)")
     
-    parser.add_argument('n_boot',
-                        action='store',
-                        default=stored_args.get('n_boot'),
-                        help="number of bootsraps")
+    requirered_args.add_argument('--n_boot',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('n_boot'),
+                                 help="number of bootsraps")
 #
 #    parser.add_argument('OUTPUT_type',
 #                        action='store',
 #                        default=stored_args.get('OUTPUT_type'),
 #                        help="OUTPUT_type: Figure Or Csv")
 #    
-    parser.add_argument('OUTPUT_type', 
-                        metavar='OUTPUT_type', help="Choose one option",
-                        widget="Listbox", nargs='+', choices=['Figure', 'Csv'],
-                        default=stored_args.get('OUTPUT_type'))
+    requirered_args.add_argument('--OUTPUT_type',
+                                 required=True,
+                                 metavar='OUTPUT_type', help="Choose one option",
+                                 widget="Listbox", nargs='+', choices=['Figure', 'Csv'],
+                                 default=stored_args.get('OUTPUT_type'))
 
-    parser.add_argument('percent_top_corr',
-                        action='store',
-                        default=stored_args.get('percent_top_corr'),
-                        help="% of top correlations of show: for all give 100")
+    requirered_args.add_argument('--percent_top_corr',
+                                 required=True,
+                                 action='store',
+                                 default=stored_args.get('percent_top_corr'),
+                                 help="% of top correlations of show: for all give 100")
    
     
     
@@ -224,11 +255,17 @@ if __name__ == '__main__':
     print("Main_Sample_info_table_CSV_full_path")
     Main_Sample_info_table_CSV_full_path = conf.Main_Sample_info_table_CSV_full_path
     print("Other important variales --a column name from the csv, if 'D' then it is a temproary option set as default, otherwise leave empty")
-    try: 
+    if conf.Other_important_variable == None:
+        
+        Other_important_variables = []
+    else:
         Other_important_variables =[str(conf.Other_important_variable)]
-     
-    except: 
-        Other_important_variables = ['']
+    
+#    try: 
+#        Other_important_variables =[str(conf.Other_important_variable)]
+#     
+#    except: 
+#        Other_important_variables = []
     print("A text file, in each line name of the columes that are going to be the Confounders to control for them")
     Confounders_list_full_path = conf.Confounders_txt_file
     with open(Confounders_list_full_path) as L:
@@ -237,11 +274,11 @@ if __name__ == '__main__':
     
     print("Diagnosis --a column name from the csv, if do not have, leave empty")
     #Diagnosis_exclusion_criteria = ''
-    if ~(str(conf.Diagnosis_exclusion_criteria) == 'None'):
-        
-        Diagnosis_exclusion_criteria = conf.Diagnosis_exclusion_criteria#'loose'
-    else:
+    if conf.Diagnosis_exclusion_criteria == None:
         Diagnosis_exclusion_criteria=''
+    else:
+        Diagnosis_exclusion_criteria = conf.Diagnosis_exclusion_criteria#'loose'
+        
 
     #    try: 
     #        
@@ -254,13 +291,12 @@ if __name__ == '__main__':
     
     print("age, sex column names")
     
-    Sex_col_name = conf.GENDER
-    Age_col_name = conf.AGE
-    try:
-        SITE_col_name = conf.SITE
-        
-    except:
+    Sex_col_name = conf.gender_column_name
+    Age_col_name = conf.AGE_column_name
+    if conf.SITE == None:
         SITE_col_name=''
+    else:
+        SITE_col_name = conf.SITE
     #***************************************************************************
     #       manual input for ROI preparation and GMV extraction settings
     #***************************************************************************
@@ -275,11 +311,14 @@ if __name__ == '__main__':
     #******************************************************
     #       manual input for NIFTI loading settings
     #******************************************************
-    mod_method= conf.Modulation_Method
-    try: 
-        Base_Sample_name = conf.Base_Sample_name
-    except:
+    mod_method= conf.Modulation_Method[0]
+    if  conf.Base_Sample_name == None:
         Base_Sample_name= '' 
+        
+    else:
+        
+        Base_Sample_name = conf.Base_Sample_name
+        
     Image_top_DIR = conf.Image_top_DIR #run_masch + 'BnB2/Derivatives/CAT/12.5/ADNI_mixedScanners/'
     #Mask_file_complete = os.path.join(run_masch + 'BnB_USER/Shahrzad/eNKI_modular', 'Masks/binned_FZJ100_all_c1meanT1.nii.gz')
     Smoothing_kernel_FWHM = conf.Smoothing_kernel_FWHM
@@ -363,20 +402,21 @@ if __name__ == '__main__':
     
     if SITE_col_name=='':
         
-        CSV_grouped_Path = Input_preparation_class.Split_column_generation(Split_settings['subsampling_scripts_base_dir'], CSV_main_Path,\
-                                                                           Split_settings['Sex_col_name'],Split_settings['Age_col_name'],\
-                                                                           Split_settings['Age_step_size'],Split_settings['test_sample_size'],\
-                                                                           Split_settings['Confounders_list_full_path'],Split_settings['gender_selection'])
+        CSV_grouped_Path, new_Confounders_list_full_path = Input_preparation_class.Split_column_generation(subsampling_scripts_base_dir = Split_settings['subsampling_scripts_base_dir'], main_csv_path= CSV_main_Path,\
+                                                                                                           Sex_col_name=Split_settings['Sex_col_name'],Age_col_name= Split_settings['Age_col_name'],\
+                                                                                                           Confounders_list_full_path = Split_settings['Confounders_list_full_path'], Age_step_size = Split_settings['Age_step_size'],\
+                                                                                                           test_sample_size = Split_settings['test_sample_size'],gender_selection = Split_settings['gender_selection'])
     else:
-        CSV_grouped_Path = Input_preparation_class.Split_column_generation(Split_settings['subsampling_scripts_base_dir'], CSV_main_Path,\
-                                                                           Split_settings['Sex_col_name'],Split_settings['Age_col_name'],\
-                                                                           Split_settings['SITE_col_name'],Split_settings['n_bins_age'],\
-                                                                           Split_settings['test_sample_size'],Split_settings['add_dummy_site_to_confounders'],\
-                                                                           Split_settings['Confounders_list_full_path'],Split_settings['gender_selection'])
+        CSV_grouped_Path, new_Confounders_list_full_path = Input_preparation_class.Split_column_generation(subsampling_scripts_base_dir = Split_settings['subsampling_scripts_base_dir'], main_csv_path= CSV_main_Path,\
+                                                                                                           Sex_col_name=Split_settings['Sex_col_name'],Age_col_name= Split_settings['Age_col_name'],\
+                                                                                                           SITE_col_name = Split_settings['SITE_col_name'],n_bins_age = Split_settings['n_bins_age'],\
+                                                                                                           add_dummy_site_to_confounders = Split_settings['add_dummy_site_to_confounders'],Confounders_list_full_path =Split_settings['Confounders_list_full_path'],\
+                                                                                                           test_sample_size = Split_settings['test_sample_size'],gender_selection = Split_settings['gender_selection'])
 
     #%%
     Imaging_Input_preparation_class = BLack_Box_2(Initial_directory_settings['Base_saving_dir'],Initial_directory_settings['workdir_name'],\
                                                   CSV_grouped_Path, NIFTI_loading_Setting['Mask_file_complete'])
+    
     
     merged_file_path = Imaging_Input_preparation_class.fourD_file_generation_from_table(NIFTI_loading_Setting['Image_top_DIR'], NIFTI_loading_Setting['merged_image_name'],\
                                                                                         NIFTI_loading_Setting['Base_Sample_name'], NIFTI_loading_Setting['mod_method'],NIFTI_loading_Setting['Smoothing_kernel_FWHM'],\
@@ -390,7 +430,9 @@ if __name__ == '__main__':
     
     
     #%%
-    
+    Functional_profiling_settings = {'stats_base_dir' : stats_base_dir, 'Cog_list_full_path_for_profiling':Cog_list_full_path_for_profiling, 'Confounders_list_full_path':new_Confounders_list_full_path,\
+                                     'Group_selection_column_name':Group_selection_column_name, 'Group_division' : Group_division, 'Group_selection_Label':Group_selection_Label,\
+                                     'Sort_correlations':Sort_correlations,'correlation_method':correlation_method, 'alpha':alpha, 'n_boot':n_boot, 'n_jobs':n_jobs}
     
     Functional_profiling_class = BLack_Box_3(Initial_directory_settings['Base_saving_dir'],Initial_directory_settings['workdir_name'],\
                                             GMV_CSV_path, Functional_profiling_settings['Cog_list_full_path_for_profiling'],\

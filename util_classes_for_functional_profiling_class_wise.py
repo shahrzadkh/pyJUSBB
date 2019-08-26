@@ -11,6 +11,9 @@ Created on Thu Feb  8 13:38:28 2018
 import os
 import numpy as np 
 import pandas as pd
+from shutil import copyfile
+
+
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
@@ -90,7 +93,7 @@ class BLack_Box_1(object):
             
     def Split_column_generation(self, subsampling_scripts_base_dir, main_csv_path,\
                                 Sex_col_name= 'Sex',Age_col_name= 'Age_current',\
-                                SITE_col_name = 'SITE',n_bins_age = 2, add_dummy_site_to_confounders = 1,\
+                                SITE_col_name = '',n_bins_age = 2, add_dummy_site_to_confounders = 1,\
                                 Confounders_list_full_path ='',Age_step_size = 10,test_sample_size = 0.5,\
                                 gender_selection = None):
 
@@ -129,25 +132,34 @@ class BLack_Box_1(object):
             main_Table.to_csv(grouped_main_sample_full_path, index = False)
             
             
+            new_Confounders_list_full_path = os.path.join(Split_sample_CSV_dir , os.path.basename(Confounders_list_full_path))
+            
+            copyfile(Confounders_list_full_path, new_Confounders_list_full_path)
+            
         else:
             n_split = 1
             # When all finalized maybe take the one function (binning_age" out of Mod_01... and delete the subsampling_sc...)
             Train_index, Test_index = several_split_ADNI_Site_matched_train_test_index_generation(subsampling_scripts_base_dir,\
-                                                                                main_csv_path,\
-                                                                                n_split,\
-                                                                                Sex_col_name,\
-                                                                                Age_col_name,\
-                                                                                SITE_col_name,\
-                                                                                n_bins_age,\
-                                                                                test_sample_size,\
-                                                                                gender_selection)
+                                                                                                  main_csv_path,\
+                                                                                                  n_split,\
+                                                                                                  Sex_col_name,\
+                                                                                                  Age_col_name,\
+                                                                                                  SITE_col_name,\
+                                                                                                  n_bins_age,\
+                                                                                                  test_sample_size,\
+                                                                                                  gender_selection)
             x = n_split-1
             main_Table = importing_table_from_csv(main_csv_path)
             #main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"Female": 0, "Male": 1})
     
             main_Table.loc[np.array(Train_index['train_' + str(x)]) , 'Which_sample'] = 1
             main_Table.loc[np.array(Test_index['test_'  + str(x)]) , 'Which_sample'] = 2
-            
+            Split_sample_CSV_dir= os.path.join(self.Working_dir,'sample_CSV')
+            try:
+                os.makedirs(Split_sample_CSV_dir)
+            except OSError:
+                if not os.path.isdir(Split_sample_CSV_dir):
+                    raise
             if add_dummy_site_to_confounders == 1:
                 # Since With Site added for matching, it might be that some subjects are neither part of group 1 nor group2: 
                 #14.02.2019 Ahemd and i commented this line: 
@@ -162,32 +174,34 @@ class BLack_Box_1(object):
                     Site_name_gr1.append("SITE_"+str(i))
                 
                 main_Table = pd.get_dummies(main_Table, columns=[SITE_col_name])
-                with open(Confounders_list_full_path) as f:
+                new_Confounders_list_full_path = os.path.join(Split_sample_CSV_dir , os.path.basename(Confounders_list_full_path))
+                
+                copyfile(Confounders_list_full_path, new_Confounders_list_full_path)
+                with open(new_Confounders_list_full_path) as f:
                     Confounders = f.read().splitlines()
                 # Now add the dummy SITE variables' names to the confounder list
                 Confounders = Confounders + Site_name_gr1[:-1]
             
-                confounds_names_full_file = open(Confounders_list_full_path, "w")
+                confounds_names_full_file = open(new_Confounders_list_full_path, "w")
                 for items in Confounders: 
                     confounds_names_full_file.write("%s\n" % items)
                         
                 confounds_names_full_file .close()
+                
+            else:
+                new_Confounders_list_full_path = os.path.join(Split_sample_CSV_dir , os.path.basename(Confounders_list_full_path))
+                
+                copyfile(Confounders_list_full_path, new_Confounders_list_full_path)
             
             
             if len(self.specific_csv_file_name) > 0 :
                 new_samples_base_name = self.specific_csv_file_name + '.csv'
             else:
                 new_samples_base_name = os.path.basename(main_csv_path).strip("main_sample_")
-            Split_sample_CSV_dir= os.path.join(self.Working_dir,'sample_CSV')
-            try:
-                os.makedirs(Split_sample_CSV_dir)
-            except OSError:
-                if not os.path.isdir(Split_sample_CSV_dir):
-                    raise
             
             grouped_main_sample_full_path = os.path.join(Split_sample_CSV_dir, 'grouped_main_sample_' + new_samples_base_name)
             main_Table.to_csv(grouped_main_sample_full_path, index = False)
-        return grouped_main_sample_full_path
+        return grouped_main_sample_full_path, new_Confounders_list_full_path
         
     
             
