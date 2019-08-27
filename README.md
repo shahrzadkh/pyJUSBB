@@ -27,6 +27,7 @@ joblib==0.11
 in the environment with the above-mentioned requirements, run the following: 
  
  python Functional_profiling_class_wise_GUI.py
+ 
  For more information refer to the wiki(https://github.com/shahrzadkh/pyJUSBB/wiki).
 
 
