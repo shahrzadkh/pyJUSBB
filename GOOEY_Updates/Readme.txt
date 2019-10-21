@@ -1,4 +1,4 @@
-Thes efiles need to replcace the files with the same name in your "Gooey" distribution. Otherwise you can not choose from a list in your gui. 
+These files need to replcace the files with the same name in your "Gooey" distribution. Otherwise you can not choose from a list in your gui. 
 
 For more information about the behavior of Gooey before applying these changes, see: 
 https://github.com/chriskiehl/Gooey/issues/284
