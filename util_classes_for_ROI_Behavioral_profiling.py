@@ -36,7 +36,7 @@ from GLM_and_ROI_generation import importing_table_from_csv,\
 
 
     
-class BLack_Box_1(object):
+class Sample_handling(object):
     def __init__(self,Base_saving_dir,workdir_name ='', specific_name_for_csv =''):
         self.specific_csv_file_name = specific_name_for_csv
         self.Base_dir = Base_saving_dir
@@ -208,7 +208,7 @@ class BLack_Box_1(object):
 
 
 ###
-class BLack_Box_2(object):
+class Imaging_data_handling(object):
     def __init__(self,Base_saving_dir,workdir_name ='', Sample_CSV_path ='', MASK_file_FULL_PATH =''):
         self.MASK_file_FULL_PATH = MASK_file_FULL_PATH
         self.Sample_CSV_path = Sample_CSV_path
@@ -301,7 +301,7 @@ class BLack_Box_2(object):
 
 ######
         
-class BLack_Box_3(object):
+class Behavioral_Profiling(object):
     def __init__(self,Base_saving_dir,workdir_name ='',Sample_CSV_path = '', Cog_list_full_path_for_profiling = '',\
                  Confounders_list_full_path = '', Group_selection_column_name = '', Group_division = False,\
                  Sort_correlations = True, correlation_method = '', alpha = 0.05, n_boot = 10):
@@ -324,11 +324,11 @@ class BLack_Box_3(object):
         self.alpha = alpha
         self.n_boot = n_boot
         
-    def ROI_Functional_profiling(self,ROI_name, stats_dir, Group_selection_Label = 'all', n_jobs=1):
+    def ROI_Behavioral_profiling(self,ROI_name, stats_dir, Group_selection_Label = 'all', n_jobs=1):
         Sample_table_with_GMV_info__full_path = self.Sample_CSV_path
         
         r_full_path, err_full_path, avail_n_full_path, masked_r_full_path,\
-        P_Val_full_path, masked_P_Val_full_path, CIs_full_path = Functional_profiling_simple_boot(ROI_name,stats_dir, Sample_table_with_GMV_info__full_path,\
+        P_Val_full_path, masked_P_Val_full_path, CIs_full_path,_ = Functional_profiling_simple_boot(ROI_name,stats_dir, Sample_table_with_GMV_info__full_path,\
                                                                                                   self.Cog_list_full_path_for_profiling ,self.Confounders_list_full_path,\
                                                                                                   self.Group_selection_column_name, self.Group_division,\
                                                                                                   Group_selection_Label, self.Sort_correlations, self.correlation_method,\

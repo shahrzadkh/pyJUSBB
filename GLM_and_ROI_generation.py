@@ -174,7 +174,18 @@ def several_split_train_test_index_generation(subsampling_scripts_base_dir, Tabl
     ### For the following code, I need sex: 1:female, 0:male
     #if len(main_Table[Sex_col_name].map({1.0: 0, 2.0: 1}).isnull()) >0:
     #main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"FEMALE": 0, "MALE": 1})
-    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"F": -1, "M": 1}) # This is new for the 
+    try:
+        a=main_Table[main_Table[Sex_col_name].str.startswith('F')][Sex_col_name].unique()[0]
+    except:
+        a=main_Table[main_Table[Sex_col_name].str.startswith('f')][Sex_col_name].unique()[0]
+    try:
+        b=main_Table[main_Table[Sex_col_name].str.startswith('M')][Sex_col_name].unique()[0]
+    except:
+        b=main_Table[main_Table[Sex_col_name].str.startswith('m')][Sex_col_name].unique()[0]
+        
+    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({a: -1, b: 1}) # This is new for the 
+#    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"F": -1, "M": 1}) # This is new for the 
+    
     
     gender_specific_tag = 0
     
@@ -1713,7 +1724,8 @@ def Create_binned_ROIS_on_surface(Stats_map_full_path, hemi, Whichfsaverage ='fs
             f.close()
         
         np.save(os.path.join(os.path.dirname(ROI_dir), 'empty_flag.npy'),empty_flag)
-
+        
+    
             
         
     return ROI_list_full_path, empty_flag
@@ -2625,7 +2637,7 @@ def Plot_multiple_sample_one_page_Functional_profile(mean_r_DF_Full_path,CI_err_
         # The loop is not anymore needed, as anyhow we will have only one plot per page.
         
         
-        fig, axes = plt.subplots(nrows=actual_n_rows_one_page, ncols=1, squeeze=False, sharex=True)
+        fig, axes = plt.subplots(nrows=actual_n_rows_one_page, ncols=1, squeeze=False, sharex=True,figsize=(10,10))
         
         means_ch = means_df
         
