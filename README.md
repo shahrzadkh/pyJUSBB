@@ -25,7 +25,13 @@ joblib==0.11
 
 # How to run: 
 in the environment with the above-mentioned requirements, run the following: 
+<<<<<<< HEAD
 python ROI_Behavioral_profiling_GUI.py
+=======
+ 
+ python Functional_profiling_class_wise_GUI.py
+ 
+>>>>>>> 88148f71cb7484db508bde9c1bea8c163d7833a6
  For more information refer to the wiki(https://github.com/shahrzadkh/pyJUSBB/wiki).
 
 
