@@ -264,8 +264,18 @@ def several_split_ADNI_Site_matched_train_test_index_generation(subsampling_scri
     main_Table = importing_table_from_csv(Table_main_filtered_full_path)
     ### For the following code, I need sex: 1:female, 0:male
     #if len(main_Table[Sex_col_name].map({1.0: 0, 2.0: 1}).isnull()) >0:
-    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"Female": -1, "Male": 1})
+#    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"Female": -1, "Male": 1})
     #main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({"F": -1, "M": 1})
+    try:
+        a=main_Table[main_Table[Sex_col_name].str.startswith('F')][Sex_col_name].unique()[0]
+    except:
+        a=main_Table[main_Table[Sex_col_name].str.startswith('f')][Sex_col_name].unique()[0]
+    try:
+        b=main_Table[main_Table[Sex_col_name].str.startswith('M')][Sex_col_name].unique()[0]
+    except:
+        b=main_Table[main_Table[Sex_col_name].str.startswith('m')][Sex_col_name].unique()[0]
+        
+    main_Table[Sex_col_name+'_num'] = main_Table[Sex_col_name].map({a: -1, b: 1}) # This is new for the 
 
     gender_specific_tag = 0
     
@@ -485,6 +495,8 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
         Subjects = Sample_Table['subject_folder'].tolist()
     elif Sample_name == 'ADNI_new':
         Subjects = Sample_Table['SubjectID'].tolist()
+    elif Sample_name == 'SCZ':
+        Subjects = Sample_Table['participant_id'].tolist()
     elif Sample_name=='':
         
         Subjects = Sample_Table['Subject'].tolist()    
@@ -527,7 +539,18 @@ def Create_gray_matter_map_filenames(Image_top_DIR, Sample_Table, Sample_name, m
                     smoothed_preprocessed_prefix = 'mwp1'
             
             files_list.append(os.path.join(Image_top_DIR,str(Sample_Table['Subject'][Subj]),'mri',smoothed_preprocessed_prefix+ str(Sample_Table['Subject'][Subj]) + '.nii'))
-
+        elif Sample_name == 'SCZ':
+            if modulation_method == 'non_linearOnly':
+                if Smoothing_kernel_FWHM >0:
+                    smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'m0wp1'
+                else: 
+                    smoothed_preprocessed_prefix =  'm0wp1'
+            elif modulation_method == 'fully_modulated':
+                if Smoothing_kernel_FWHM >0:
+                    smoothed_preprocessed_prefix =  's'+ str(Smoothing_kernel_FWHM) +'mwp1'
+                else:
+                    smoothed_preprocessed_prefix = 'mwp1'
+            files_list.append(os.path.join(Image_top_DIR, str(Sample_Table['site_detail'][Subj]),str(Sample_Table['participant_id'][Subj]), 'mri',smoothed_preprocessed_prefix+ str(Sample_Table['participant_id'][Subj])+ '.nii'))
         elif Sample_name =='':
             ##This is because VBM8 apparently had an extra -r in the naming
 #            if modulation_method == 'non_linearOnly':

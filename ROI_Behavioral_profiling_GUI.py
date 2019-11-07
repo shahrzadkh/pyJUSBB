@@ -19,7 +19,7 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 plt.ioff() #http://matplotlib.org/faq/usage_faq.html (interactive mode)
 from GLM_and_ROI_generation import Create_multiple_sample_Functional_profile_PDFs
-from util_classes_for_functional_profiling_class_wise import Sample_handling, Imaging_data_handling, Behavioral_Profiling                                    
+from util_classes_for_ROI_Behavioral_profiling import Sample_handling, Imaging_data_handling, Behavioral_Profiling                                    
 
 # Only chnage now should be to delete the fix merged 4D file. And hopefully using only AD subjects, the merging is easilly done in python. 
 
@@ -87,7 +87,7 @@ def parse_args():
     parser.add_argument('--Diagnosis_exclusion_criteria', 
                         required=False,
                         metavar='Diagnosis_exclusion_criteria', help="Name of a column if it exists Otherwise choose 'None' \nChoose one option ",
-                        widget="Listbox", nargs='+', choices=['loose', 'strict'],
+                        widget="Listbox", nargs='+', choices=['loose', 'strict', 'none'],
                         default=stored_args.get('Diagnosis_exclusion_criteria'))
 
 
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     
     print("Diagnosis --a column name from the csv, if do not have, leave empty")
     #Diagnosis_exclusion_criteria = ''
-    if conf.Diagnosis_exclusion_criteria == None:
+    if conf.Diagnosis_exclusion_criteria == ['none']:
         Diagnosis_exclusion_criteria=''
     else:
         Diagnosis_exclusion_criteria = conf.Diagnosis_exclusion_criteria[0]#'loose'
