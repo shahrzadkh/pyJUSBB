@@ -80,7 +80,7 @@ pydotplus==2.0.2
 pyflakes==1.6.0
 Pygments==2.2.0
 pylint==1.7.1
-pyOpenSSL==17.2.0
+pyOpenSSL==17.5.0
 pyparsing==2.2.0
 PyPDF2==1.26.0
 Pypubsub==4.0.3
