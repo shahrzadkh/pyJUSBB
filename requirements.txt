@@ -5,7 +5,7 @@ asn1crypto==0.22.0
 astroid==1.5.3
 async-timeout==3.0.0
 attrs==18.1.0
-Babel==2.4.0
+Babel==2.9.1
 backports.functools-lru-cache==1.4
 bleach==2.0.0
 bokeh==0.12.13
