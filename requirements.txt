@@ -82,7 +82,7 @@ Pygments==2.2.0
 pylint==1.7.1
 pyOpenSSL==17.2.0
 pyparsing==2.2.0
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 Pypubsub==4.0.3
 PySocks==1.6.7
 pytest==3.2.3
